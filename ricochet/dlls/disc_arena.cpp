@@ -27,6 +27,10 @@
 #include "disc_objects.h"
 
 int g_iNextArenaGroupInfo = 0;
+int	g_iRoundTimeLimit; // i don't want to add these as g vars 
+                       // but if i add them as members, the generated export name changes and the server won't start. 
+					   // if anybody is actually reading this and knows how to resolve this please let me know.
+int	g_iPreBattleTime;
 
 void ClientUserInfoChanged( edict_t *pEntity, char *infobuffer );
 edict_t *EntSelectSpawnPoint( CBaseEntity *pPlayer );
@@ -77,9 +81,8 @@ void CDiscArena::Spawn( void )
 	pev->groupinfo = 1 << (g_iNextArenaGroupInfo++);
 	Reset();
 
-	// Initialize
-	m_iMaxRounds = CVAR_GET_FLOAT("rc_rounds");
 	m_iPlayersPerTeam = g_iPlayersPerTeam;
+	
 	SetThink( NULL );
 }
 
@@ -115,6 +118,10 @@ void CDiscArena::Reset( void )
 //-----------------------------------------------------------------------------
 void CDiscArena::StartBattle( void )
 {
+	m_iMaxRounds = CVAR_GET_FLOAT("rc_rounds");
+	g_iRoundTimeLimit = CVAR_GET_FLOAT("rc_roundtimelimit");
+	g_iPreBattleTime = CVAR_GET_FLOAT("rc_prebattletime");
+
 	m_iCurrRound = 0;
 	m_iTeamOneScore = m_iTeamTwoScore = 0;
 
@@ -181,8 +188,8 @@ void CDiscArena::StartBattle( void )
 void CDiscArena::StartRound( void )
 {
 	m_iCurrRound++;
-	m_iSecondsTillStart = ARENA_TIME_PREBATTLE;
-	m_flTimeLimitOver = gpGlobals->time + ARENA_TIME_ROUNDLIMIT;
+	m_iSecondsTillStart = g_iPreBattleTime;
+	m_flTimeLimitOver = gpGlobals->time + g_iRoundTimeLimit;
 
 	RestoreWorldObjects();
 
@@ -428,7 +435,7 @@ void CDiscArena::BattleOver( void )
 	pev->nextthink = gpGlobals->time + 3;
 	SetThink( &CDiscArena::FinishedThink );
 
-	m_iSecondsTillStart = ARENA_TIME_VIEWSCORES;
+	m_iSecondsTillStart = g_iPreBattleTime;
 	m_iArenaState = ARENA_SHOWING_SCORES;
 
 	RestoreWorldObjects();

@@ -28,11 +28,6 @@
 #define ARENA_BATTLE_IN_PROGRESS	2
 #define ARENA_SHOWING_SCORES		3
 
-// Arena Times
-#define ARENA_TIME_PREBATTLE		5
-#define ARENA_TIME_VIEWSCORES		3
-#define ARENA_TIME_ROUNDLIMIT		120		// Timelimit on rounds
-
 enum
 {
 	GAME_LOST = 0,

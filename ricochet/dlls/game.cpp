@@ -28,6 +28,9 @@ cvar_t  allow_spectators = { "allow_spectators", "1.0", FCVAR_SERVER };		// 0 pr
 
 // discwar
 cvar_t	rc_rounds			= {"rc_rounds", "3",  FCVAR_SERVER | FCVAR_UNLOGGED };
+cvar_t	rc_prebattletime	= {"rc_prebattletime", "5",  FCVAR_SERVER | FCVAR_UNLOGGED };
+cvar_t	rc_roundtimelimit	= {"rc_roundtimelimit", "120",  FCVAR_SERVER | FCVAR_UNLOGGED };
+
 cvar_t	rc_playersperteam	= {"rc_playersperteam", "1",  FCVAR_SERVER | FCVAR_UNLOGGED };
 cvar_t	rc_arena			= {"rc_arena", "1",  FCVAR_SERVER | FCVAR_UNLOGGED };
 
@@ -475,6 +478,9 @@ void GameDLLInit( void )
 
 	// Discwar
 	CVAR_REGISTER (&rc_rounds);
+	CVAR_REGISTER (&rc_roundtimelimit);
+	CVAR_REGISTER (&rc_prebattletime);
+
 	CVAR_REGISTER (&rc_playersperteam);
 	CVAR_REGISTER (&rc_arena);
 
