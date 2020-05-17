@@ -465,8 +465,23 @@ void ClientCommand( edict_t *pEntity )
 		if ( allow_spectators.value )
 		{
 			CBasePlayer *pPlayer = GetClassPtr((CBasePlayer *)pev);
-			edict_t *pentSpawnSpot = EntSelectSpawnPoint( pPlayer );
-			pPlayer->StartObserver( VARS(pentSpawnSpot)->origin, VARS(pentSpawnSpot)->angles);
+			if (!(pPlayer->pev->flags & FL_SPECTATOR)) {
+				if (pPlayer->m_pCurrentArena) {
+					pPlayer->m_pCurrentArena->BattleOver();
+					pPlayer->m_pCurrentArena->RemoveClient(pPlayer);
+					pPlayer->m_pCurrentArena = NULL;
+				}
+				edict_t *pentSpawnSpot = EntSelectSpawnPoint( pPlayer );
+				pPlayer->StartObserver( VARS(pentSpawnSpot)->origin, VARS(pentSpawnSpot)->angles);
+
+				pPlayer->pev->flags |= FL_SPECTATOR;
+			} else if (pPlayer->pev->flags & FL_SPECTATOR) {
+				pPlayer->pev->flags &= FL_SPECTATOR;
+				if (InArenaMode())
+					AddClientToArena(pPlayer);
+				else
+					pPlayer->StopObserver();
+			}
 		}
 	}
 

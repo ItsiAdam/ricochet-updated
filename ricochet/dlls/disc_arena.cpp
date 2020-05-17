@@ -90,7 +90,7 @@ void CDiscArena::Reset( void )
 	{
 		CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
 
-		if (pPlayer && (pPlayer->m_pCurrentArena == this) && pPlayer->m_bHasDisconnected != TRUE )
+		if (pPlayer && (pPlayer->m_pCurrentArena == this) && pPlayer->m_bHasDisconnected != TRUE && !(pPlayer->pev->flags & FL_SPECTATOR))
 		{
 			RemoveClient( pPlayer );
 
@@ -124,7 +124,7 @@ void CDiscArena::StartBattle( void )
 	{
 		CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
 
-		if (pPlayer && (pPlayer->m_pCurrentArena == this) && pPlayer->m_bHasDisconnected != TRUE )
+		if (pPlayer && (pPlayer->m_pCurrentArena == this) && pPlayer->m_bHasDisconnected != TRUE && !(pPlayer->pev->flags & FL_SPECTATOR) )
 			pPlayer->m_iLastGameResult = GAME_DIDNTPLAY;
 	}
 
@@ -191,7 +191,7 @@ void CDiscArena::StartRound( void )
 	{
 		CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( iPlayerNum );
 
-		if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && (pPlayer->m_bHasDisconnected != TRUE) )
+		if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && (pPlayer->m_bHasDisconnected != TRUE) && !(pPlayer->pev->flags & FL_SPECTATOR) )
 		{
 			MESSAGE_BEGIN( MSG_ONE, gmsgStartRnd, NULL, pPlayer->edict() );
 				WRITE_BYTE( m_iCurrRound );
@@ -324,7 +324,7 @@ void CDiscArena::CountDownThink( void )
 	{
 		CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
 
-		if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && pPlayer->m_bHasDisconnected != TRUE)
+		if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && pPlayer->m_bHasDisconnected != TRUE && !(pPlayer->pev->flags & FL_SPECTATOR))
 		{
 			MESSAGE_BEGIN( MSG_ONE, gmsgStartRnd, NULL, pPlayer->edict() );
 				WRITE_BYTE( m_iCurrRound );
@@ -388,7 +388,7 @@ void CDiscArena::PlayerRespawned( CBasePlayer *pPlayer )
 		for ( int i = 1; i <= gpGlobals->maxClients; i++ )
 		{
 			CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
-			if (pPlayer && pPlayer->m_bHasDisconnected != TRUE)
+			if (pPlayer && pPlayer->m_bHasDisconnected != TRUE && !(pPlayer->pev->flags & FL_SPECTATOR))
 				iNumPlayers++;
 		}
 
@@ -417,7 +417,7 @@ void CDiscArena::MoveToSpectator( CBasePlayer *pPlayer )
 	}
 
 	pPlayer->pev->team = 0;
-	pPlayer->Observer_SetMode( OBS_LOCKEDVIEW );
+	pPlayer->Observer_SetMode( OBS_ROAMING );
 }
 
 //-----------------------------------------------------------------------------
@@ -448,7 +448,7 @@ void CDiscArena::TimeOver( void )
 		{
 			CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
 
-			if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && pPlayer->m_bHasDisconnected != TRUE)
+			if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && pPlayer->m_bHasDisconnected != TRUE && !(pPlayer->pev->flags & FL_SPECTATOR))
 				ClientPrint( pPlayer->pev, HUD_PRINTCENTER, "#Time_Warning" );
 		}
 
@@ -460,7 +460,7 @@ void CDiscArena::TimeOver( void )
 		{
 			CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
 
-			if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && (pPlayer->m_bHasDisconnected != TRUE) )
+			if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && (pPlayer->m_bHasDisconnected != TRUE) && !(pPlayer->pev->flags & FL_SPECTATOR) )
 				ClientPrint( pPlayer->pev, HUD_PRINTCENTER, "#Time_Over" );
 		}
 
@@ -515,7 +515,7 @@ bool CDiscArena::CheckBattleOver( void )
 		{
 			CBasePlayer *pPlayer = (CBasePlayer*)UTIL_PlayerByIndex( iPlayerNum );
 
-			if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && (pPlayer->m_bHasDisconnected != TRUE) )
+			if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && (pPlayer->m_bHasDisconnected != TRUE)  && !(pPlayer->pev->flags & FL_SPECTATOR))
 			{
 				MESSAGE_BEGIN( MSG_ONE, gmsgEndRnd, NULL, pPlayer->edict() );
 					WRITE_BYTE( m_iCurrRound );
@@ -622,7 +622,7 @@ void CDiscArena::FinishedThink( void )
 		{
 			CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
 
-			if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && pPlayer->m_bHasDisconnected != TRUE)
+			if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && pPlayer->m_bHasDisconnected != TRUE && !(pPlayer->pev->flags & FL_SPECTATOR))
 			{
 				MESSAGE_BEGIN( MSG_ONE, gmsgEndRnd, NULL, pPlayer->edict() );
 					WRITE_BYTE( m_iCurrRound );
@@ -749,7 +749,7 @@ void CDiscArena::RemoveClient( CBasePlayer *pPlayer )
 		// No, she's in the queue, so remove her.
 		RemovePlayerFromQueue( pPlayer );
 	}
-	else if ( m_iArenaState != ARENA_WAITING_FOR_PLAYERS )
+	if ( m_iArenaState != ARENA_WAITING_FOR_PLAYERS )
 	{
 		// This team loses
 		m_iWinningTeam = (pPlayer->pev->team == 1) ? 2 : 1;
@@ -942,7 +942,7 @@ int AddPlayers( int iPlayers, int iArenaNum )
 	{
 		CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
 
-		if (pPlayer && (pPlayer->m_pCurrentArena == NULL) && (pPlayer->m_bHasDisconnected != TRUE) )
+		if (pPlayer && (pPlayer->m_pCurrentArena == NULL) && (pPlayer->m_bHasDisconnected != TRUE) && !(pPlayer->pev->flags & FL_SPECTATOR))
 		{
 			if ( pPlayer->m_iLastGameResult != iPlayers )
 				continue;
@@ -992,7 +992,7 @@ void ShufflePlayers( void )
 				{
 					CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( j );
 
-					if (pPlayer && (pPlayer->m_pCurrentArena == g_pArenaList[i]) && (pPlayer->m_bHasDisconnected != TRUE) )
+					if (pPlayer && (pPlayer->m_pCurrentArena == g_pArenaList[i]) && (pPlayer->m_bHasDisconnected != TRUE) && !(pPlayer->pev->flags & FL_SPECTATOR) )
 					{
 						// Add to the first arena
 						g_pArenaList[0]->AddClient( pPlayer, TRUE );
@@ -1038,7 +1038,7 @@ void CDiscArena::PostBattle( void )
 	{
 		CBasePlayer *pPlayer = (CBasePlayer *)UTIL_PlayerByIndex( i );
 
-		if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && (pPlayer->m_bHasDisconnected != TRUE) )
+		if (pPlayer && (pPlayer->pev->groupinfo & pev->groupinfo) && (pPlayer->m_bHasDisconnected != TRUE) && !(pPlayer->pev->flags & FL_SPECTATOR))
 		{
 			g_pArenaList[ iOtherGame ]->AddClient( (CBasePlayer*)pPlayer, TRUE );
 		}
