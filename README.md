@@ -1,17 +1,23 @@
 # Ricochet Updated
-This is a fork of SoloKiller's updated version of the Half-Life SDK. The objective of this project is to add a number of quality of life features to the Ricochet server, perhaps expanding the effort to the client in the future.
+This is a fork of SoloKiller's updated version of the Half-Life SDK. 
+The objective of this project is to add a number of quality of life features and fixes to Ricochet. The effort may extend to other GoldSrc games.
 
 ## Principles
-Changes to the server should not break compatibility with the original client.
-Changes to the client should only be visual improvements, for example, hud elements relating to tournaments, improved ammo indicators, redesigned scoreboard, etc.
+Changes to server should not break compatibility with Valve clients.
+Changes to client should not give players an advantage over other players.
 
 ## Current changes
+Serverside:
+- Added cvar rc_roundtimelimit
+- Added cvar rc_prebattletime (if set too low, the player will lose while still respawning)
+- Fixed existing cvar rc_rounds, now also checks for changes after each battle (not each round)
+
 - Fixed spectate in arena.
 - "spectate" command now actually toggles spectator.
 - Default spectate mode set to free roam.
-- Respects rc_rounds, also checks for changes after each battle (not each round)
-- Added cvar rc_roundtimelimit
-- Added cvar rc_prebattletime (if set too low, the player will lose while still respawning)
+
+Clientside:
+- None
 
 ## Building for Linux
 Currently only build environments on ArchLinux have been tested. 
