@@ -39,7 +39,7 @@ char *szPowerupModels[NUM_POWERUPS] =
 	"models/pow_fast.mdl",
 	"models/pow_hard.mdl",
 	"models/pow_freeze.mdl",
-	//"models/pow_visual.mdl",
+	"models/pow_visual.mdl",
 };
 
 LINK_ENTITY_TO_CLASS( item_powerup, CDiscwarPowerup );

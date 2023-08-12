@@ -42,7 +42,7 @@
 
 #define POW_VISUALIZE_REBOUNDS		(1<<4)			// Removing this one for now
 
-#define	NUM_POWERUPS				4				// 4, not 5, because VISUALIZE_REBOUNDS is removed.
+#define	NUM_POWERUPS				5				// 4 by default, because VISUALIZE_REBOUNDS is removed.
 
 #define FREEZE_TIME					7
 #define	FREEZE_SPEED				50
