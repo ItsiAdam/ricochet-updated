@@ -1071,7 +1071,7 @@ int USENTENCEG_PickSequential(int isentenceg, char *szfound, int ipick, int fres
 #ifdef WIN32
 	itoa(ipick, sznum, 10);
 #else
-	ipick = atol(ipick);
+	ipick = atol(szfound);
 #endif
 	strcat(szfound, sznum);
 	
