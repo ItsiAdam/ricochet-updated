@@ -94,6 +94,7 @@ LINK_ENTITY_TO_CLASS(disc, CDisc);
 void CDisc::Spawn(void)
 {
 	CBasePlayer *pPlayer;
+	CBasePlayer *pHitPlayer;
 
 	pPlayer = (CBasePlayer *)GET_PRIVATE(pev->owner);
 
@@ -111,11 +112,9 @@ void CDisc::Spawn(void)
 
 			if (FClassnameIs(tr.pHit, "player"))
 			{
+				pHitPlayer = (CBasePlayer *)GET_PRIVATE(tr.pHit);
+				pHitPlayer->Decapitate(&pev->owner->v);
 				UTIL_Sparks(tr.vecEndPos);
-				// KILL THE PLAYER
-				((CBasePlayer *)GET_PRIVATE(tr.pHit))->TakeDamage(pev, pev, 100, DMG_GENERIC);
-
-				EMIT_SOUND(ENT(pev), CHAN_WEAPON, "rocket1.wav", 1, 0.1);
 				pPlayer->RemovePowerup(POW_VISUALIZE_REBOUNDS);
 				return;
 			}
