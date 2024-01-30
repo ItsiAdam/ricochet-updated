@@ -8,10 +8,12 @@ Changes to client should not give players an advantage over other players.
 
 ## Current changes
 Serverside:
+- Added 5th power-up, a single shot which instantly decapitates
+- Added cvar rc_enable_crouch and rc_enable_jump
 - Added cvar rc_roundtimelimit
 - Added cvar rc_prebattletime (if set too low, the player will lose while still respawning)
-- Fixed existing cvar rc_rounds, now also checks for changes after each battle (not each round)
-
+- Randomly assigns user's the male & female models, instead of all being male.
+- Fixed existing cvar rc_rounds, now also checks for changes after each battle (not each round
 - Fixed spectate in arena.
 - "spectate" command now actually toggles spectator.
 - Default spectate mode set to free roam.
